@@ -1,0 +1,23 @@
+<link rel="import" href="../polymer/polymer.html"/>
+<dom-module id="xenon-date">
+    <template>
+        {{text}}
+    </template>
+    <script>
+    Polymer({
+        is:"xenon-date", 
+        properties: {
+            value: { type: Date, observer: "valueSet" }, 
+            text: String
+        }, 
+        valueSet: function(val) {
+            var year = val.getFullYear();
+            var month = (val.getMonth() + 1).toString();
+            var day = val.getDate().toString(); 
+            month = month.length > 1 ? month : "0" + month; 
+            day = day.length > 1 ? day : "0" + day;
+            this.text = month + "-" + day + "-" + year;
+        }
+    });
+    </script>
+</dom-module>
