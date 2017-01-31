@@ -10,7 +10,8 @@
             value: { type: Date, observer: "valueSet" }, 
             text: String
         }, 
-        valueSet: function(val) {
+        valueSet: function(datval) {
+            var val = new Date(datval);
             var year = val.getFullYear();
             var month = (val.getMonth() + 1).toString();
             var day = val.getDate().toString(); 
