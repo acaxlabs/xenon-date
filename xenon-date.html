@@ -18,19 +18,16 @@ Example:
     <style>
       label { font-size:12px; color:grey; font-family: Roboto, Noto, sans-serif; font-weight:400 }
        .inner { flex: 0 0 auto; }
-        .wrapper { padding: 12px 0px 4px 0px;}
         .content {  padding: 4px 0px 4px 0px;}
     </style>
     <template>
-        <div id="wrapper">
-            <label hidden$="[[!label]]" aria-hidden="true" for="input">[[label]]</label>
                 <div id="content" style="display:flex;">
                     <div class="inner">{{_date_}}</div>
                     <template is="dom-if" if="{{hasTimeItem}}">
                         <div class="inner" style="padding: 0px 0px 0px 4px;">{{actualTime}}</div>
                     </template>
                 </div>
-        </div>
+       
     </template>
     <script>
     Polymer({
@@ -38,7 +35,6 @@ Example:
         properties: {
             value: { type: Date, observer: "_valueSet" }, 
             _date_: { type: String, notify: true },
-            label: { type: String, observer:"_toggleClass" },
             hasTimeItem: { type: Boolean, notify: true, value: false },
         },
         _valueSet: function(datval) {
@@ -59,10 +55,6 @@ Example:
             var strTime = hours + ':' + minutes + ' ' + ampm;
             this.set("actualTime", strTime)
         },
-        _toggleStuff: function () {
-            this.toggleClass("wrapper", true, this.$.wrapper)
-            this.toggleClass("content", true, this.$.content)
-        }
     });
     </script>
 </dom-module>
