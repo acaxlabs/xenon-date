@@ -1,23 +1,67 @@
+<!--
+
+`<xenon-date>` provides a simple date output. Simply bind your UTC timestamp to components attribute "value".
+Example:
+
+           `<xenon-date value="2017-08-20 21:11:35.537000"></xenon-date>
+            <xenon-date value="{{utcTimeStamp}}></xenon-date>
+            <xenon-date has-time-item value="2017-03-20 21:11:35.537000"></xenon-date>
+            <xenon-date label="Start Date" has-time-item value="2017-03-20 21:11:35.537000"></xenon-date>`
+
+@group Xenon Elements
+@element xenon-date
+@demo demo/index.html
+-->
+
 <link rel="import" href="../polymer/polymer.html"/>
 <dom-module id="xenon-date">
+    <style>
+      label { font-size:12px; color:grey; font-family: Roboto, Noto, sans-serif; font-weight:400 }
+       .inner { flex: 0 0 auto; }
+        .wrapper { padding: 12px 0px 4px 0px;}
+        .content {  padding: 4px 0px 4px 0px;}
+    </style>
     <template>
-        {{text}}
+        <div id="wrapper">
+            <label hidden$="[[!label]]" aria-hidden="true" for="input">[[label]]</label>
+                <div id="content" style="display:flex;">
+                    <div class="inner">{{_date_}}</div>
+                    <template is="dom-if" if="{{hasTimeItem}}">
+                        <div class="inner" style="padding: 0px 0px 0px 4px;">{{actualTime}}</div>
+                    </template>
+                </div>
+        </div>
     </template>
     <script>
     Polymer({
         is:"xenon-date", 
         properties: {
-            value: { type: Date, observer: "valueSet" }, 
-            text: String
-        }, 
-        valueSet: function(datval) {
+            value: { type: Date, observer: "_valueSet" }, 
+            _date_: { type: String, notify: true },
+            label: { type: String, observer:"_toggleClass" },
+            hasTimeItem: { type: Boolean, notify: true, value: false },
+        },
+        _valueSet: function(datval) {
             var val = new Date(datval);
             var year = val.getFullYear();
             var month = (val.getMonth() + 1).toString();
             var day = val.getDate().toString(); 
             month = month.length > 1 ? month : "0" + month; 
             day = day.length > 1 ? day : "0" + day;
-            this.text = month + "-" + day + "-" + year;
+            this.set("_date_", month + "-" + day + "-" + year)
+            if (this.hasTimeItem == false) return;
+            var hours = val.getHours();
+            var minutes = val.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            this.set("actualTime", strTime)
+        },
+        _toggleStuff: function () {
+            this.toggleClass("wrapper", true, this.$.wrapper)
+            this.toggleClass("content", true, this.$.content)
         }
     });
     </script>
