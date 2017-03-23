@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -7,8 +7,15 @@
     <link rel="import" href="../xenon-date.html" />
 </head>
 <body>
-    <xenon-date value="2017-08-20 21:11:35.537000"></xenon-date>
-    <xenon-date has-time-item value="2017-03-20 21:11:35.537000"></xenon-date>
-    <xenon-date label="Start Date" has-time-item value="2017-03-20 21:11:35.537000"></xenon-date>
+    <div>Plain date values like 3/20/2017 are parsed as local time by JS</div>
+    <xenon-date value="3/20/2017"></xenon-date>
+    <div>ISO date values like 2017-03-20 are parsed as UTC time by JS</div>
+    <xenon-date value="2017-03-20"></xenon-date>
+    <div>ISO date 2017-03-20T00:00:00</div>
+    <xenon-date value="2017-03-20T00:00:00"></xenon-date>
+    <div>ISO date with time output</div>
+    <xenon-date show-time value="2017-03-20T00:00:00"></xenon-date>
+    <div>ISO date with time output in UTC</div>
+    <xenon-date show-time show-utc value="2017-03-20T00:00:00"></xenon-date>
 </body>
 </html>
