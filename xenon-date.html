@@ -13,48 +13,51 @@ Example:
 @demo demo/index.html
 -->
 
-<link rel="import" href="../polymer/polymer.html"/>
+<link rel="import" href="../polymer/polymer.html" />
 <dom-module id="xenon-date">
-    <style>
-      label { font-size:12px; color:grey; font-family: Roboto, Noto, sans-serif; font-weight:400 }
-       .inner { flex: 0 0 auto; }
-        .content {  padding: 4px 0px 4px 0px;}
-    </style>
     <template>
-                <div id="content" style="display:flex;">
-                    <div class="inner">{{_date_}}</div>
-                    <template is="dom-if" if="{{hasTimeItem}}">
-                        <div class="inner" style="padding: 0px 0px 0px 4px;">{{actualTime}}</div>
-                    </template>
-                </div>
-       
+        <span class="inner">{{_date}}</span>
+        <span class="inner" hidden$="{{!showTime}}"> {{_time}}</span>
     </template>
     <script>
-    Polymer({
-        is:"xenon-date", 
-        properties: {
-            value: { type: Date, observer: "_valueSet" }, 
-            _date_: { type: String, notify: true },
-            hasTimeItem: { type: Boolean, notify: true, value: false },
-        },
-        _valueSet: function(datval) {
-            var val = new Date(datval);
-            var year = val.getFullYear();
-            var month = (val.getMonth() + 1).toString();
-            var day = val.getDate().toString(); 
-            month = month.length > 1 ? month : "0" + month; 
-            day = day.length > 1 ? day : "0" + day;
-            this.set("_date_", month + "-" + day + "-" + year)
-            if (this.hasTimeItem == false) return;
-            var hours = val.getHours();
-            var minutes = val.getMinutes();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12; // the hour '0' should be '12'
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            var strTime = hours + ':' + minutes + ' ' + ampm;
-            this.set("actualTime", strTime)
-        },
-    });
+        Polymer({
+            is: "xenon-date",
+            properties: {
+                value: { type: Date, observer: "_valueChange" },
+                _date: { type: String, notify: true },
+                showTime: { type: Boolean, notify: true, value: false },
+                showUtc: { type:Boolean, value:false }
+            },
+            _valueChange: function (datval) {
+                var val = new Date(datval);
+                var parts = (this.showUtc) ? this._getUtcParts(val) : this._getLocalParts(val);
+                parts.ampm = parts.hours >= 12 ? 'pm' : 'am';
+                parts.hours = parts.hours % 12;
+                if (parts.hours == 0) parts.hours = 12;
+                this._date = this._pad(parts.month) + "-" + this._pad(parts.day) + "-" + parts.year;
+                this._time = this._pad(parts.hours) + ":" + this._pad(parts.minutes) + " " + parts.ampm;
+            },
+            _pad: function(value) {
+                return (value.toString().length == 2) ? value.toString() : "0" + value.toString(); 
+            },
+            _getLocalParts: function (value) {
+                return {
+                    year: value.getFullYear(),
+                    month: value.getMonth() + 1,
+                    day: value.getDate(),
+                    hours: value.getHours(),
+                    minutes: value.getMinutes()
+                };
+            },
+            _getUtcParts: function (value) {
+                return {
+                    year: value.getUTCFullYear(),
+                    month: value.getUTCMonth() + 1,
+                    day: value.getUTCDate(),
+                    hours: value.getUTCHours(),
+                    minutes: value.getUTCMinutes()
+                };
+            }
+        });
     </script>
 </dom-module>
