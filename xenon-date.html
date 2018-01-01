@@ -13,7 +13,8 @@ Example:
 @demo demo/index.html
 -->
 
-<link rel="import" href="../polymer/polymer.html" />
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="xenon-date-behavior.html">
 <dom-module id="xenon-date">
     <template>
         <content id="content"></content>
@@ -28,6 +29,9 @@ Example:
                 showTime: { type: Boolean, notify: true, value: false },
                 showUtc: { type:Boolean, value:false }
             },
+            behaviors: [
+                ACAXLabs.XenonDateBehavior
+            ],
             _valueChange: function(datval) {
                 // wipe out my content 
                 var children = Polymer.dom(this).childNodes;
@@ -44,33 +48,8 @@ Example:
                 Polymer.dom(this).appendChild(node);
             },
             _dateChange: function (val) {
-                var parts = (this.showUtc) ? this._getUtcParts(val) : this._getLocalParts(val);
-                parts.ampm = parts.hours >= 12 ? 'pm' : 'am';
-                parts.hours = parts.hours % 12;
-                if (parts.hours == 0) parts.hours = 12;
-                this.date = this._pad(parts.month) + "-" + this._pad(parts.day) + "-" + parts.year;
-                this.time = this._pad(parts.hours) + ":" + this._pad(parts.minutes) + " " + parts.ampm;
-            },
-            _pad: function(value) {
-                return (value.toString().length == 2) ? value.toString() : "0" + value.toString(); 
-            },
-            _getLocalParts: function (value) {
-                return {
-                    year: value.getFullYear(),
-                    month: value.getMonth() + 1,
-                    day: value.getDate(),
-                    hours: value.getHours(),
-                    minutes: value.getMinutes()
-                };
-            },
-            _getUtcParts: function (value) {
-                return {
-                    year: value.getUTCFullYear(),
-                    month: value.getUTCMonth() + 1,
-                    day: value.getUTCDate(),
-                    hours: value.getUTCHours(),
-                    minutes: value.getUTCMinutes()
-                };
+                this.date = this.getDateString(val, this.showUtc);
+                this.time = this.getTimeString(val, this.showUtc);
             }
         });
     </script>
