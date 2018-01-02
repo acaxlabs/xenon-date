@@ -2,11 +2,16 @@
 <script>
     window.ACAXLabs = window.ACAXLabs || {} ;
     ACAXLabs.XenonDateBehavior = {
+        getDateTimeString: function(val, inUtc) {
+            return this.getDateString(val, inUtc) + ' ' + this.getTimeString(val, inUtc);
+        },
         getDateString: function(val, inUtc) {
+            val = new Date(val);
             var parts = (inUtc) ? this._getUtcParts(val) : this._getLocalParts(val);
             return this._pad(parts.month) + "-" + this._pad(parts.day) + "-" + parts.year;
         },
         getTimeString: function(val, inUtc) {
+            val = new Date(val);
             var parts = (inUtc) ? this._getUtcParts(val) : this._getLocalParts(val);
             parts.ampm = parts.hours >= 12 ? 'pm' : 'am';
             parts.hours = parts.hours % 12;
