@@ -7,6 +7,7 @@
         },
         getDateString: function(val, inUtc) {
             val = new Date(val);
+            val = val.setHours(1,0,0); //Set time to 1AM to bypass C# to JS conversion bug
             var parts = (inUtc) ? this._getUtcParts(val) : this._getLocalParts(val);
             return this._pad(parts.month) + "-" + this._pad(parts.day) + "-" + parts.year;
         },
